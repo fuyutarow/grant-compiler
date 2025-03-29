@@ -4,12 +4,12 @@ module grant_compiler::test_hackathon_integration {
     use std::string::{utf8};
     use sui::test_scenario::{Self as test, ctx};
     use sui::clock::{Self, Clock};
-    use sui::balance;
-    use grant_compiler::hackathon::{Self, Hackathon};
-    use grant_compiler::project::{Self, Project};
+    use grant_compiler::hackathon::Hackathon;
+    use grant_compiler::project::Project;
 
     const ALICE: address = @0xA11CE;
     const BOB: address = @0xB0B;
+    const REWARD_SUI_SUPPLY: u64 = 1000 * 1_000_000_000;
 
     #[test]
     fun test_hackathon_flow() {
@@ -34,21 +34,18 @@ module grant_compiler::test_hackathon_integration {
         // === Step 2: ALICE stakes SUI ===
         test.next_tx(ALICE); {
             let mut hackathon = test.take_shared<Hackathon>();
-
-            // ✅ 正しい方法で SUI を取得
-            let coin = test::mint<sui::sui::SUI>(ALICE);
-            let balance = coin::into_balance(coin);
+            let coin = sui::coin::mint_for_testing<sui::sui::SUI>(REWARD_SUI_SUPPLY, test.ctx());
+            let balance = sui::coin::into_balance(coin);
             hackathon.stake_sui(balance);
-
             test::return_shared(hackathon);
         };
 
 
         // === Step 3: BOB submits Project ===
         test.next_tx(BOB); {
-            let mut hackathon = test.take_shared<Hackathon>();
             let clock = test.take_shared<Clock>();
-            let _project = grant_compiler::project::new(
+            let mut hackathon = test.take_shared<Hackathon>();
+            let project = grant_compiler::project::new(
                 &mut hackathon,
                 utf8(b"My Project"),
                 utf8(b"Cool stuff"),
@@ -56,8 +53,10 @@ module grant_compiler::test_hackathon_integration {
                 &clock,
                 test.ctx()
             );
+            sui::transfer::public_transfer(project, BOB);
             test::return_shared(hackathon);
             test::return_shared(clock);
+
         };
 
         // === Step 4: ALICE updates score ===
@@ -76,6 +75,7 @@ module grant_compiler::test_hackathon_integration {
             let mut hackathon = test.take_shared<Hackathon>();
             let mut project = test.take_from_address<Project>(BOB);
             project.claim_reward(&mut hackathon, &clock, test.ctx());
+            test::return_to_address(BOB, project);
             test::return_shared(hackathon);
             test::return_shared(clock);
         };

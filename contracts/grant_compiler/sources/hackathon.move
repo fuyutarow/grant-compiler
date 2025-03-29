@@ -71,9 +71,10 @@ public fun add_project_id(self: &mut Hackathon, project_id: ID) {
     self.scoreboard.scores.add(project_id, 0);
 }
 
-public fun update_score(self: &mut Hackathon, project_id: ID, score: u64) {
-    self.scoreboard.scores.add(project_id, score);
-    self.scoreboard.sum_score = self.scoreboard.sum_score + score;
+public fun update_score(self: &mut Hackathon, project_id: ID, new_score: u64) {
+    let old_score = *self.scoreboard.scores.borrow(project_id);
+    *self.scoreboard.scores.borrow_mut(project_id) = new_score;
+    self.scoreboard.sum_score = self.scoreboard.sum_score + new_score - old_score;
 }
 
 public fun calulate_project_reward_value(self: &Hackathon, project_id: ID): u64 {
