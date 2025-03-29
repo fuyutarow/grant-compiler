@@ -2,13 +2,13 @@ import { PUBLISHED_AT } from '..';
 import { GenericArg, generic, obj, pure } from '../../_framework/util';
 import { Transaction, TransactionArgument, TransactionObjectInput } from '@mysten/sui/transactions';
 
-export function createStakingRewards(
+export function createStakingGrants(
   tx: Transaction,
   typeArg: string,
   value: bigint | TransactionArgument,
 ) {
   return tx.moveCall({
-    target: `${PUBLISHED_AT}::balance::create_staking_rewards`,
+    target: `${PUBLISHED_AT}::balance::create_staking_grants`,
     typeArguments: [typeArg],
     arguments: [pure(tx, value, `u64`)],
   });

@@ -17,14 +17,14 @@ export function addProjectId(tx: Transaction, args: AddProjectIdArgs) {
   });
 }
 
-export interface CalulateProjectRewardValueArgs {
+export interface CalulateProjectGrantValueArgs {
   hackathon: TransactionObjectInput;
   id: string | TransactionArgument;
 }
 
-export function calulateProjectRewardValue(tx: Transaction, args: CalulateProjectRewardValueArgs) {
+export function calulateProjectGrantValue(tx: Transaction, args: CalulateProjectGrantValueArgs) {
   return tx.moveCall({
-    target: `${PUBLISHED_AT}::hackathon::calulate_project_reward_value`,
+    target: `${PUBLISHED_AT}::hackathon::calulate_project_grant_value`,
     arguments: [obj(tx, args.hackathon), pure(tx, args.id, `${ID.$typeName}`)],
   });
 }
@@ -48,15 +48,15 @@ export function create(tx: Transaction, args: CreateArgs) {
   });
 }
 
-export interface SplitProjectRewardArgs {
+export interface SplitProjectGrantArgs {
   hackathon: TransactionObjectInput;
   id: string | TransactionArgument;
   clock: TransactionObjectInput;
 }
 
-export function splitProjectReward(tx: Transaction, args: SplitProjectRewardArgs) {
+export function splitProjectGrant(tx: Transaction, args: SplitProjectGrantArgs) {
   return tx.moveCall({
-    target: `${PUBLISHED_AT}::hackathon::split_project_reward`,
+    target: `${PUBLISHED_AT}::hackathon::split_project_grant`,
     arguments: [obj(tx, args.hackathon), pure(tx, args.id, `${ID.$typeName}`), obj(tx, args.clock)],
   });
 }
@@ -95,14 +95,14 @@ export function updateScore(tx: Transaction, args: UpdateScoreArgs) {
   });
 }
 
-export interface WithdrawRemainingRewardArgs {
+export interface WithdrawRemainingGrantArgs {
   hackathon: TransactionObjectInput;
   clock: TransactionObjectInput;
 }
 
-export function withdrawRemainingReward(tx: Transaction, args: WithdrawRemainingRewardArgs) {
+export function withdrawRemainingGrant(tx: Transaction, args: WithdrawRemainingGrantArgs) {
   return tx.moveCall({
-    target: `${PUBLISHED_AT}::hackathon::withdraw_remaining_reward`,
+    target: `${PUBLISHED_AT}::hackathon::withdraw_remaining_grant`,
     arguments: [obj(tx, args.hackathon), obj(tx, args.clock)],
   });
 }

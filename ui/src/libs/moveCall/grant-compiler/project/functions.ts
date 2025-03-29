@@ -3,15 +3,15 @@ import { String } from '../../_dependencies/onchain/0x1/string/structs';
 import { obj, pure } from '../../_framework/util';
 import { Transaction, TransactionArgument, TransactionObjectInput } from '@mysten/sui/transactions';
 
-export interface ClaimRewardArgs {
+export interface ClaimGrantArgs {
   project: TransactionObjectInput;
   hackathon: TransactionObjectInput;
   clock: TransactionObjectInput;
 }
 
-export function claimReward(tx: Transaction, args: ClaimRewardArgs) {
+export function claimGrant(tx: Transaction, args: ClaimGrantArgs) {
   return tx.moveCall({
-    target: `${PUBLISHED_AT}::project::claim_reward`,
+    target: `${PUBLISHED_AT}::project::claim_grant`,
     arguments: [obj(tx, args.project), obj(tx, args.hackathon), obj(tx, args.clock)],
   });
 }

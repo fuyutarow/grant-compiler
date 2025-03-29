@@ -72,7 +72,7 @@ export default function CreateHackathon() {
 
             {/* Stake Amount */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reward (SUI)*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Grant (SUI)*</label>
               <input
                 type="number"
                 step="0.001"

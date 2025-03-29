@@ -78,14 +78,14 @@ fun test_hackathon_flow() {
 
 
 
-    // === Step 5: BOB claims reward ===
+    // === Step 5: BOB claims grant ===
     test.next_tx(BOB); {
         let mut clock = test.take_shared<Clock>();
         clock.increment_for_testing(1_000_000_000_000); // 10 seconds after deadline
 
         let mut hackathon = test.take_shared<Hackathon>();
         let mut project = test.take_from_address<Project>(BOB);
-        project.claim_reward(&mut hackathon, &clock, test.ctx());
+        project.claim_grant(&mut hackathon, &clock, test.ctx());
         test::return_to_address(BOB, project);
         test::return_shared(hackathon);
         test::return_shared(clock);

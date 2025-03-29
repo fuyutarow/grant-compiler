@@ -5,14 +5,15 @@ use sui::clock::Clock;
 use sui::object::{Self, ID, UID};
 use sui::tx_context::{Self, TxContext};
 use sui::balance::{Self, Balance};
+use sui::url::{Self, Url};
 
 // To be a single owner object
 public struct Project has key, store {
     id: UID,
     title: String,
     description: String,
-    walrus_ref: String,
     hackathon_id: ID,
+    links: vector<Url>,
     owner: address,
     created_at: u64,
 }
@@ -21,7 +22,7 @@ public fun new(
     hackathon: &mut grant_compiler::hackathon::Hackathon,
     title: String,
     description: String,
-    walrus_ref: String,
+    links: vector<Url>,
     clock: &Clock,
     ctx: &mut TxContext,
 ): Project {
@@ -29,7 +30,7 @@ public fun new(
         id: object::new(ctx),
         title,
         description,
-        walrus_ref,
+        links,
         hackathon_id: object::id(hackathon),
         owner: tx_context::sender(ctx),
         created_at: clock.timestamp_ms(),
@@ -44,23 +45,21 @@ public fun update(
     self: &mut Project,
     new_title: String,
     new_description: String,
-    new_walrus_ref: String,
     ctx: &TxContext,
 ) {
     assert!(self.owner == ctx.sender(), 0);
     self.title = new_title;
     self.description = new_description;
-    self.walrus_ref = new_walrus_ref;
 }
 
-public fun claim_reward(
+public fun claim_grant(
     self: &Project,
     hackathon: &mut grant_compiler::hackathon::Hackathon,
     clock: &Clock,
     ctx: &mut TxContext,
 ) {
-    let reward = hackathon.split_project_reward(object::id(self), clock);
-    let coin = sui::coin::from_balance(reward, ctx);
+    let grant = hackathon.split_project_grant(object::id(self), clock);
+    let coin = sui::coin::from_balance(grant, ctx);
     sui::transfer::public_transfer(coin, self.owner);
 }
 

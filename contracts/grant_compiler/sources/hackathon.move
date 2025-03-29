@@ -125,28 +125,28 @@ public fun update_score(
 }
 
 // ===================================
-// Reward Calculation / Distribution
+// Grant Calculation / Distribution
 // ===================================
 
-public fun calulate_project_reward_value(self: &Hackathon, project_id: ID): u64 {
+public fun calulate_project_grant_value(self: &Hackathon, project_id: ID): u64 {
     let total_score = self.scoreboard.sum_score;
     assert!(total_score > 0, ERR_INVALID_TOTAL_SCORE);
 
     let project_score = *self.scoreboard.scores.borrow(project_id);
-    let project_reward_value = total_score * project_score / total_score;
-    project_reward_value
+    let project_grant_value = total_score * project_score / total_score;
+    project_grant_value
 }
 
-public fun split_project_reward(self: &mut Hackathon, project_id: ID, clock: &Clock): Balance<sui::sui::SUI> {
+public fun split_project_grant(self: &mut Hackathon, project_id: ID, clock: &Clock): Balance<sui::sui::SUI> {
     assert!(clock.timestamp_ms() > self.deadline, ERR_DEADLINE_PASSED);
     assert!(!self.pool.distributed.contains(project_id), ERR_ALREADY_DISTRIBUTED);
 
-    let project_reward_value = self.calulate_project_reward_value(project_id);
-    let project_reward = self.pool.reserved_sui.split(project_reward_value);
-    project_reward
+    let project_grant_value = self.calulate_project_grant_value(project_id);
+    let project_grant = self.pool.reserved_sui.split(project_grant_value);
+    project_grant
 }
 
-public fun withdraw_remaining_reward(self: &mut Hackathon, ctx: &mut TxContext, clock: &Clock) {
+public fun withdraw_remaining_grant(self: &mut Hackathon, ctx: &mut TxContext, clock: &Clock) {
     assert!(clock.timestamp_ms() > self.deadline, ERR_DEADLINE_NOT_PASSED);
 
     let total_score = self.scoreboard.sum_score;
@@ -157,11 +157,11 @@ public fun withdraw_remaining_reward(self: &mut Hackathon, ctx: &mut TxContext, 
     let mut i = 0;
     let mut remaining = total_value;
     while (i < project_count) {
-        remaining = remaining - self.calulate_project_reward_value(*self.projects.borrow(i));
+        remaining = remaining - self.calulate_project_grant_value(*self.projects.borrow(i));
         i = i + 1;
     };
 
-    let remaining_reward = self.pool.reserved_sui.split(remaining);
-    let coin = sui::coin::from_balance(remaining_reward, ctx);
+    let remaining_grant = self.pool.reserved_sui.split(remaining);
+    let coin = sui::coin::from_balance(remaining_grant, ctx);
     sui::transfer::public_transfer(coin, self.created_by);
 }
