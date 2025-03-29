@@ -1,6 +1,4 @@
 'use client';
-import { ConnectButton } from '@mysten/dapp-kit';
-import Image from 'next/image';
 import { getUserProfile } from '@/src/contracts/query';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useEffect, useState } from 'react';
@@ -9,6 +7,7 @@ import {
   calculateTotalBalance,
   formatBalance,
 } from '@/src/utils/assetsHelpers';
+import { AppBar } from '@/src/components/AppBar';
 
 export default function Home() {
   const account = useCurrentAccount();
@@ -31,12 +30,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex justify-between items-center p-4 bg-white shadow-md">
-        <div className="flex items-center rounded-full overflow-hidden">
-          <Image src="/logo/logo.jpg" alt="Sui Logo" width={80} height={40} />
-        </div>
-        <ConnectButton />
-      </header>
+      <AppBar />
       {userObjects != null ? (
         <main className="flex-grow flex flex-col items-center p-8">
           {userObjects && (
