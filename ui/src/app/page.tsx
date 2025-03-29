@@ -7,9 +7,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (pathname === '/') {
-      router.push('/hackathons');
-    }
+    router.push(`/hackathons`);
   }, [pathname, router]);
 
   return null; // Or a loading indicator if needed

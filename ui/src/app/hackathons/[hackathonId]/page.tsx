@@ -2,26 +2,23 @@
 
 import { useParams } from 'next/navigation';
 import { AppBar } from '@/src/components/AppBar';
-import { useEffect, useState } from 'react';
-import { Counter } from '@/src/libs/moveCall/counter/counter/structs';
-import { suiClient } from '@/src/contracts';
-import useSWR from 'swr';
+import Link from 'next/link';
+import { ProjectFields } from '@/src/libs/moveCall/grant-compiler/project/structs';
+import { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 type Params = {
   hackathonId: string;
 };
 
-const Page = () => {
+export default function Page() {
+  const pathname = usePathname();
+  const router = useRouter();
   const { hackathonId } = useParams<Params>();
 
-  return (
-    <div className="min-h-screen flex flex-col">
-      <AppBar />
-      <main className="flex-grow flex flex-col items-center p-8">
-        <p>/hackathons/{hackathonId}</p>
-      </main>
-    </div>
-  );
-};
+  useEffect(() => {
+    router.push(`/hackathons/${hackathonId}/projects`);
+  }, [pathname, router]);
 
-export default Page;
+  return null; // Or a loading indicator if needed
+}
