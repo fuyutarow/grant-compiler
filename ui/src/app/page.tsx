@@ -1,10 +1,14 @@
-'use client'
-import { ConnectButton } from '@mysten/dapp-kit'
-import Image from 'next/image'
-import { getUserProfile } from '@/src/contracts/query'
-import { useCurrentAccount } from '@mysten/dapp-kit'
-import { useEffect, useState } from 'react'
-import { CategorizedObjects, calculateTotalBalance, formatBalance } from '@/src/utils/assetsHelpers'
+'use client';
+import { ConnectButton } from '@mysten/dapp-kit';
+import Image from 'next/image';
+import { getUserProfile } from '@/src/contracts/query';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useEffect, useState } from 'react';
+import {
+  CategorizedObjects,
+  calculateTotalBalance,
+  formatBalance,
+} from '@/src/utils/assetsHelpers';
 
 export default function Home() {
   const account = useCurrentAccount();
@@ -33,48 +37,52 @@ export default function Home() {
         </div>
         <ConnectButton />
       </header>
-      {userObjects!=null ? (
-      <main className="flex-grow flex flex-col items-center p-8">
-        {userObjects && (
-          <div className="w-full max-w-6xl">
-            <h2 className="text-2xl font-bold mb-4">Your Assets</h2>
+      {userObjects != null ? (
+        <main className="flex-grow flex flex-col items-center p-8">
+          {userObjects && (
+            <div className="w-full max-w-6xl">
+              <h2 className="text-2xl font-bold mb-4">Your Assets</h2>
 
-            <div className="flex gap-8">
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-2">Coins</h3>
-                {Object.entries(userObjects.coins).map(([coinType, coins]) => {
-                  const totalBalance = calculateTotalBalance(coins);
-                  return (
-                    <div key={coinType} className="mb-4 p-4 bg-gray-100 rounded-lg">
-                      <h4 className="font-medium text-lg">{coinType.split('::').pop()}</h4>
-                      <p>Count: {coins.length}</p>
-                      <p>Total Balance: {formatBalance(totalBalance)}</p>
-                    </div>
-                  );
-                })}
-              </div>
+              <div className="flex gap-8">
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold mb-2">Coins</h3>
+                  {Object.entries(userObjects.coins).map(([coinType, coins]) => {
+                    const totalBalance = calculateTotalBalance(coins);
+                    return (
+                      <div key={coinType} className="mb-4 p-4 bg-gray-100 rounded-lg">
+                        <h4 className="font-medium text-lg">{coinType.split('::').pop()}</h4>
+                        <p>Count: {coins.length}</p>
+                        <p>Total Balance: {formatBalance(totalBalance)}</p>
+                      </div>
+                    );
+                  })}
+                </div>
 
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-2">Other Objects</h3>
-                <div className="h-[500px] overflow-y-auto pr-4">
-                  {Object.entries(userObjects.objects).map(([objectType, objects]) => (
-                    <div key={objectType} className="mb-4 p-4 bg-gray-100 rounded-lg">
-                      <h4 className="font-medium text-lg">{objectType.split('::').pop()}</h4>
-                      <p>Count: {objects.length}</p>
-                      <p className="text-gray-500 text-sm">{objectType.split('::').pop()}</p>
-                      <p className="text-gray-500 text-sm">{objectType.split('::')[0]}</p>
-                    </div>
-                  ))}
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold mb-2">Other Objects</h3>
+                  <div className="h-[500px] overflow-y-auto pr-4">
+                    {Object.entries(userObjects.objects).map(([objectType, objects]) => (
+                      <div key={objectType} className="mb-4 p-4 bg-gray-100 rounded-lg">
+                        <h4 className="font-medium text-lg">{objectType.split('::').pop()}</h4>
+                        <p>Count: {objects.length}</p>
+                        <p className="text-gray-500 text-sm">{objectType.split('::').pop()}</p>
+                        <p className="text-gray-500 text-sm">{objectType.split('::')[0]}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-      </main>
-      ):(
+          )}
+        </main>
+      ) : (
         <div className="flex-grow flex flex-col items-center p-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-8">Welcome to Nextjs Sui Dapp Template</h1>
-          <h3 className="text-2xl font-bold text-gray-800 mb-8">Please connect your wallet to view your assets</h3>
+          <h1 className="text-4xl font-bold text-gray-800 mb-8">
+            Welcome to Nextjs Sui Dapp Template
+          </h1>
+          <h3 className="text-2xl font-bold text-gray-800 mb-8">
+            Please connect your wallet to view your assets
+          </h3>
         </div>
       )}
     </div>

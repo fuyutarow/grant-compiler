@@ -1,4 +1,4 @@
-import { SuiObjectResponse } from "@mysten/sui/client";
+import { SuiObjectResponse } from '@mysten/sui/client';
 
 export interface CategorizedObjects {
   coins: {
@@ -15,27 +15,30 @@ export interface Balance {
 }
 
 export const categorizeSuiObjects = (objects: SuiObjectResponse[]): CategorizedObjects => {
-  return objects.reduce((acc: CategorizedObjects, obj) => {
-    const content = obj.data?.content;
-    if (content?.dataType !== "moveObject") {
-      return acc;
-    }
+  return objects.reduce(
+    (acc: CategorizedObjects, obj) => {
+      const content = obj.data?.content;
+      if (content?.dataType !== 'moveObject') {
+        return acc;
+      }
 
-    const type = content.type;
-    if (type.startsWith("0x2::coin::Coin<")) {
-      const coinType = type.match(/<(.+)>/)?.[1] || "Unknown";
-      if (!acc.coins[coinType]) {
-        acc.coins[coinType] = [];
+      const type = content.type;
+      if (type.startsWith('0x2::coin::Coin<')) {
+        const coinType = type.match(/<(.+)>/)?.[1] || 'Unknown';
+        if (!acc.coins[coinType]) {
+          acc.coins[coinType] = [];
+        }
+        acc.coins[coinType].push(obj);
+      } else {
+        if (!acc.objects[type]) {
+          acc.objects[type] = [];
+        }
+        acc.objects[type].push(obj);
       }
-      acc.coins[coinType].push(obj);
-    } else {
-      if (!acc.objects[type]) {
-        acc.objects[type] = [];
-      }
-      acc.objects[type].push(obj);
-    }
-    return acc;
-  }, { coins: {}, objects: {} });
+      return acc;
+    },
+    { coins: {}, objects: {} },
+  );
 };
 
 export const calculateTotalBalance = (coins: SuiObjectResponse[]): Balance => {
@@ -56,7 +59,7 @@ export const calculateTotalBalance = (coins: SuiObjectResponse[]): Balance => {
 
   const integer = total / BigInt(10 ** 9);
   const decimal = (total % BigInt(10 ** 9)).toString().padStart(9, '0');
-  
+
   return { integer, decimal };
 };
 
