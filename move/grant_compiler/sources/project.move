@@ -53,8 +53,13 @@ module grant_compiler::project {
         self.walrus_ref = new_walrus_ref;
     }
 
-    public fun claim_reward(self: &Project, hackathon: &mut grant_compiler::hackathon::Hackathon, ctx: &mut TxContext) {
-        let reward = hackathon.split_project_reward(object::id(self));
+    public fun claim_reward(
+        self: &Project,
+        hackathon: &mut grant_compiler::hackathon::Hackathon,
+        clock: &Clock,
+        ctx: &mut TxContext,
+    ) {
+        let reward = hackathon.split_project_reward(object::id(self), clock);
         let coin = sui::coin::from_balance(reward, ctx);
         sui::transfer::public_transfer(coin, self.owner);
     }
