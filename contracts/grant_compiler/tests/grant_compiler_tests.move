@@ -53,7 +53,7 @@ fun test_hackathon_flow() {
             &mut hackathon,
             utf8(b"My Project"),
             utf8(b"Cool stuff"),
-            utf8(b"walrus://ref"),
+            vector[sui::url::new_unsafe_from_bytes(b"https://example.com")],
             &clock,
             test.ctx()
         );

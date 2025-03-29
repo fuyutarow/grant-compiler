@@ -21,7 +21,6 @@ create-new-address:
     sui client new-address ed25519
 
 
-
 # Switch Active Address
 switch-active-address ADDRESS:
     sui client switch --address {{ADDRESS}}
@@ -32,10 +31,11 @@ request-sui ADDRESS:
     --header 'Content-Type: application/json' \
     --data-raw '{ "FixedAmountRequest": { "recipient": "{{ADDRESS}}" } }'
 
-# Publish Move Package
+publish-move PKG="grant_compiler":
+    cd contracts/{{PKG}} && sui client publish --gas-budget 100000000
+
 publish-counter:
-    cd move/counter
-    sui client publish --gas-budget 100000000
+    cd move/counter && sui client publish --gas-budget 100000000
 
 # Install Dependencies
 install-dependencies:

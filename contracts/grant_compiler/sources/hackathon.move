@@ -5,7 +5,6 @@ use sui::clock::Clock;
 use sui::object::{Self, ID, UID};
 use sui::table::{Self, Table};
 use sui::balance::{Self, Balance};
-use sui::tx_context::{Self, TxContext};
 
 // ===================================
 // Error Codes
