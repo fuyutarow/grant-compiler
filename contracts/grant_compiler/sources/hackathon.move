@@ -1,10 +1,11 @@
 module grant_compiler::hackathon;
 
 use std::string::{Self, String};
+
+use sui::balance::{Self, Balance};
 use sui::clock::Clock;
 use sui::object::{Self, ID, UID};
 use sui::table::{Self, Table};
-use sui::balance::{Self, Balance};
 
 // ===================================
 // Error Codes

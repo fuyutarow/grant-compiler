@@ -29,9 +29,9 @@ fun test_hackathon_flow() {
         let mut root = test.take_shared<grant_compiler::root::Root>();
         let cap = grant_compiler::hackathon::create(
             &mut root,
-            utf8(b"My Hackathon"),
-            utf8(b"A fun event"),
-            999999999999,
+            utf8(b"My Hackathon"), // title
+            utf8(b"A fun event"), // description
+            999999999999, // deadline
             &clock,
             test.ctx()
         );
@@ -57,9 +57,11 @@ fun test_hackathon_flow() {
         let mut hackathon = test.take_shared<Hackathon>();
         let project = grant_compiler::project::new(
             &mut hackathon,
-            utf8(b"My Project"),
-            utf8(b"Cool stuff"),
-            vector[sui::url::new_unsafe_from_bytes(b"https://example.com")],
+            utf8(b"My Project"), // title
+            utf8(b"Cool stuff"), // description
+            std::option::some(sui::url::new_unsafe_from_bytes(b"https://picsum.photos/seed/42/400/400")),
+            vector[sui::url::new_unsafe_from_bytes(b"https://example.com")], // links
+            vector[utf8(b"tag1"), utf8(b"tag2")], // tags
             &clock,
             test.ctx()
         );

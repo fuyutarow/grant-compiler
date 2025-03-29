@@ -1,10 +1,12 @@
 module grant_compiler::project;
 
+use std::option::{Self, Option};
 use std::string::{Self, String};
+
+use sui::balance::{Self, Balance};
 use sui::clock::Clock;
 use sui::object::{Self, ID, UID};
 use sui::tx_context::{Self, TxContext};
-use sui::balance::{Self, Balance};
 use sui::url::{Self, Url};
 
 // To be a single owner object
@@ -13,7 +15,9 @@ public struct Project has key, store {
     title: String,
     description: String,
     hackathon_id: ID,
+    logo: Option<Url>,
     links: vector<Url>,
+    tags: vector<String>,
     owner: address,
     created_at: u64,
 }
@@ -22,7 +26,9 @@ public fun new(
     hackathon: &mut grant_compiler::hackathon::Hackathon,
     title: String,
     description: String,
+    logo: Option<Url>,
     links: vector<Url>,
+    tags: vector<String>,
     clock: &Clock,
     ctx: &mut TxContext,
 ): Project {
@@ -30,7 +36,9 @@ public fun new(
         id: object::new(ctx),
         title,
         description,
+        logo,
         links,
+        tags,
         hackathon_id: object::id(hackathon),
         owner: tx_context::sender(ctx),
         created_at: clock.timestamp_ms(),
