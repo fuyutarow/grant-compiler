@@ -99,10 +99,12 @@ export class AddressKey implements StructClass {
 
   static get bcs() {
     return bcs.struct('AddressKey', {
-      pos0: bcs.bytes(32).transform({
-        input: (val: string) => fromHEX(val),
-        output: (val: Uint8Array) => toHEX(val),
-      }),
+      pos0: bcs
+        .bytes(32)
+        .transform({
+          input: (val: string) => fromHEX(val),
+          output: (val: Uint8Array) => toHEX(val),
+        }),
     });
   }
 

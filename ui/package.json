@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "suigen:testnet": "sui-client-gen -m suigen-testnet.toml -o src/libs/moveCall && bun fmt",
+    "suigen:testnet": "rm -rf src/libs/moveCall && sui-client-gen -m suigen-testnet.toml -o src/libs/moveCall && bun fmt",
     "lint": "biome lint ./src",
     "fmt": "biome format --write ./src"
   },
