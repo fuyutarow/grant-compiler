@@ -3,8 +3,8 @@
 import { Transaction } from '@mysten/sui/transactions'
 import { useSignAndExecuteTransaction, useSignTransaction } from '@mysten/dapp-kit'
 import { useState } from 'react'
-import { suiClient } from '@/contracts'
-import { CreateSponsoredTransactionApiResponse, SponsorTxRequestBody } from '@/types/sponsorTx'
+import { suiClient } from '@/src/contracts'
+import { CreateSponsoredTransactionApiResponse, SponsorTxRequestBody } from '@/src/types/sponsorTx'
 import { fromBase64, toBase64 } from '@mysten/sui/utils'
 import { SuiTransactionBlockResponse, SuiTransactionBlockResponseOptions } from '@mysten/sui/client'
 export type BetterSignAndExecuteTransactionProps<TArgs extends unknown[] = unknown[]> = {

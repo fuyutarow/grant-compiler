@@ -1,7 +1,7 @@
 import { isValidSuiAddress } from "@mysten/sui/utils";
 import { suiClient } from "./index";
 import { SuiObjectResponse } from "@mysten/sui/client";
-import { categorizeSuiObjects, CategorizedObjects } from "@/utils/assetsHelpers";
+import { categorizeSuiObjects, CategorizedObjects } from "@/src/utils/assetsHelpers";
 
 export const getUserProfile = async (address: string): Promise<CategorizedObjects> => {
   if (!isValidSuiAddress(address)) {

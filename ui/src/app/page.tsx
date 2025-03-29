@@ -1,10 +1,10 @@
 'use client'
 import { ConnectButton } from '@mysten/dapp-kit'
 import Image from 'next/image'
-import { getUserProfile } from '@/contracts/query'
+import { getUserProfile } from '@/src/contracts/query'
 import { useCurrentAccount } from '@mysten/dapp-kit'
 import { useEffect, useState } from 'react'
-import { CategorizedObjects, calculateTotalBalance, formatBalance } from '@/utils/assetsHelpers'
+import { CategorizedObjects, calculateTotalBalance, formatBalance } from '@/src/utils/assetsHelpers'
 
 export default function Home() {
   const account = useCurrentAccount();

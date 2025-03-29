@@ -2,11 +2,11 @@ import { Transaction } from '@mysten/sui/transactions';
 import { OwnedObjectRef } from '@mysten/sui/client';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
-import { suiClient } from '@/contracts';
+import { suiClient } from '@/src/contracts';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
 type Env = 'testnet' | 'mainnet' | string;
-    
+
 async function buildAndPublishPackage(env: Env = 'testnet',basepath: string = './') {
     console.log('Building package...');
 
@@ -78,7 +78,7 @@ async function buildAndPublishPackage(env: Env = 'testnet',basepath: string = '.
                     .toLowerCase() // Convert to lowercase
                     .replace(/::/g, ' ') // Replace :: with space temporarily
                     .split(' ') // Split into words
-                    .map((word, index) => 
+                    .map((word, index) =>
                         index === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1)
                     )
                     .join(''); // Join words back together
