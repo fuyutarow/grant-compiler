@@ -7,6 +7,7 @@ import { Counter } from '@/src/libs/moveCall/counter/counter/structs';
 import { suiClient } from '@/src/contracts';
 import useSWR from 'swr';
 import Link from 'next/link';
+import ProjectCard from '@/src/components/ProjectCard';
 
 type Params = {
   hackathonId: string;
@@ -32,8 +33,8 @@ const Page = () => {
   const { hackathonId } = useParams<Params>();
 
   const projects = [
-    { id: Math.floor(Math.random() * 1000000), title: 'Project 1', description: 'Description for Project 1', tags: getRandomTags() },
-    { id: Math.floor(Math.random() * 1000000), title: 'Project 2', description: 'Description for Project 2', tags: getRandomTags() },
+    { id: Math.floor(Math.random() * 1000000).toString(), title: 'Project 1', description: 'Description for Project 1', tags: getRandomTags() },
+    { id: Math.floor(Math.random() * 1000000).toString(), title: 'Project 2', description: 'Description for Project 2', tags: getRandomTags() },
     // Add more projects as needed
   ];
 
@@ -41,28 +42,12 @@ const Page = () => {
     <div className="min-h-screen flex flex-col bg-white text-black">
       <AppBar />
       <main className="flex-grow flex flex-col items-center p-8 w-full">
+        <Link href={`/hackathons`} className="mb-4 text-blue-500 hover:underline self-start">
+          &larr; Back to Hackathons
+        </Link>
         <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-4">
           {projects.map((project) => (
-            <Link key={project.id} href={`/projects/${project.id}`} passHref>
-              <div className="bg-gray-100 shadow-md rounded-lg overflow-hidden cursor-pointer">
-                <img
-                  src={`https://picsum.photos/seed/${project.id}/400/400`}
-                  alt={project.title}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4">
-                  <h2 className="text-lg font-bold">{project.title}</h2>
-                  <p className="text-gray-700">{project.description}</p>
-                  <div className="mt-2">
-                    {project.tags.map((tag, index) => (
-                      <span key={index} className="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full mr-2">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Link>
+            <ProjectCard key={project.id} hackathonId={hackathonId} project={project} />
           ))}
         </div>
       </main>

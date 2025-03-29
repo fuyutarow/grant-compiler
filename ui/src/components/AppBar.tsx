@@ -10,6 +10,11 @@ export const AppBar = () => (
         <span className="text-xl font-bold text-gray-800">Grant Compiler</span>
       </div>
     </Link>
-    <ConnectButton />
+    <div className="flex items-center">
+      <Link href="/mypage" passHref>
+        <span className="text-gray-800 hover:underline cursor-pointer mr-4">My Page</span>
+      </Link>
+      <ConnectButton />
+    </div>
   </header>
 );

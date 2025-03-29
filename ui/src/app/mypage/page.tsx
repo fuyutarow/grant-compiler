@@ -9,6 +9,7 @@ import {
 } from '@/src/utils/assetsHelpers';
 import { AppBar } from '@/src/components/AppBar';
 import Link from 'next/link';
+import ProjectCard from '@/src/components/ProjectCard';
 
 const MyPage = () => {
   const account = useCurrentAccount();
@@ -47,26 +48,7 @@ const MyPage = () => {
             <h2 className="text-xl font-bold mb-2">{hackathon.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {hackathon.projects.map((project) => (
-                <Link key={project.id} href={`/hackathons/${hackathon.id}/projects/${project.id}`} passHref>
-                  <div className="bg-gray-100 shadow-md rounded-lg overflow-hidden cursor-pointer">
-                    <img
-                      src={`https://picsum.photos/seed/${project.id}/400/400`}
-                      alt={project.title}
-                      className="w-full h-64 object-cover"
-                    />
-                    <div className="p-4">
-                      <h2 className="text-lg font-bold">{project.title}</h2>
-                      <p className="text-gray-700">{project.description}</p>
-                      <div className="mt-2">
-                        {project.tags.map((tag, index) => (
-                          <span key={index} className="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full mr-2">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <ProjectCard key={project.id} hackathonId={hackathon.id} project={project} />
               ))}
             </div>
           </div>
