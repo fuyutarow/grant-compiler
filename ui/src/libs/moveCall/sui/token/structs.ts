@@ -134,19 +134,15 @@ export class ActionRequest<T extends PhantomTypeArgument> implements StructClass
     return bcs.struct('ActionRequest', {
       name: String.bcs,
       amount: bcs.u64(),
-      sender: bcs
-        .bytes(32)
-        .transform({
+      sender: bcs.bytes(32).transform({
+        input: (val: string) => fromHEX(val),
+        output: (val: Uint8Array) => toHEX(val),
+      }),
+      recipient: Option.bcs(
+        bcs.bytes(32).transform({
           input: (val: string) => fromHEX(val),
           output: (val: Uint8Array) => toHEX(val),
         }),
-      recipient: Option.bcs(
-        bcs
-          .bytes(32)
-          .transform({
-            input: (val: string) => fromHEX(val),
-            output: (val: Uint8Array) => toHEX(val),
-          }),
       ),
       spent_balance: Option.bcs(Balance.bcs),
       approvals: VecSet.bcs(TypeName.bcs),

@@ -1,6 +1,7 @@
 import { PUBLISHED_AT } from '..';
 import { String } from '../../_dependencies/onchain/0x1/string/structs';
-import { obj, pure } from '../../_framework/util';
+import { Url } from '../../_dependencies/onchain/0x2/url/structs';
+import { obj, option, pure, vector } from '../../_framework/util';
 import { Transaction, TransactionArgument, TransactionObjectInput } from '@mysten/sui/transactions';
 
 export interface ClaimGrantArgs {
@@ -20,7 +21,9 @@ export interface NewArgs {
   hackathon: TransactionObjectInput;
   string1: string | TransactionArgument;
   string2: string | TransactionArgument;
-  string3: string | TransactionArgument;
+  option: TransactionObjectInput | TransactionArgument | null;
+  vecUrl: Array<TransactionObjectInput> | TransactionArgument;
+  vecString: Array<string | TransactionArgument> | TransactionArgument;
   clock: TransactionObjectInput;
 }
 
@@ -31,7 +34,9 @@ export function new_(tx: Transaction, args: NewArgs) {
       obj(tx, args.hackathon),
       pure(tx, args.string1, `${String.$typeName}`),
       pure(tx, args.string2, `${String.$typeName}`),
-      pure(tx, args.string3, `${String.$typeName}`),
+      option(tx, `${Url.$typeName}`, args.option),
+      vector(tx, `${Url.$typeName}`, args.vecUrl),
+      pure(tx, args.vecString, `vector<${String.$typeName}>`),
       obj(tx, args.clock),
     ],
   });
@@ -41,7 +46,6 @@ export interface UpdateArgs {
   project: TransactionObjectInput;
   string1: string | TransactionArgument;
   string2: string | TransactionArgument;
-  string3: string | TransactionArgument;
 }
 
 export function update(tx: Transaction, args: UpdateArgs) {
@@ -51,7 +55,6 @@ export function update(tx: Transaction, args: UpdateArgs) {
       obj(tx, args.project),
       pure(tx, args.string1, `${String.$typeName}`),
       pure(tx, args.string2, `${String.$typeName}`),
-      pure(tx, args.string3, `${String.$typeName}`),
     ],
   });
 }

@@ -30,6 +30,7 @@ export function calulateProjectGrantValue(tx: Transaction, args: CalulateProject
 }
 
 export interface CreateArgs {
+  root: TransactionObjectInput;
   string1: string | TransactionArgument;
   string2: string | TransactionArgument;
   u64: bigint | TransactionArgument;
@@ -40,6 +41,7 @@ export function create(tx: Transaction, args: CreateArgs) {
   return tx.moveCall({
     target: `${PUBLISHED_AT}::hackathon::create`,
     arguments: [
+      obj(tx, args.root),
       pure(tx, args.string1, `${String.$typeName}`),
       pure(tx, args.string2, `${String.$typeName}`),
       pure(tx, args.u64, `u64`),

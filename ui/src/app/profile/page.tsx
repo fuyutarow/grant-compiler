@@ -15,10 +15,24 @@ const MyPage = () => {
   const [userObjects, setUserObjects] = useState<CategorizedObjects | null>(null);
 
   const hackathons = [
-    { id: 'hackathon-1', title: 'Hackathon 1', projects: [
-      { id: 'project-1', title: 'Project 1', description: 'Description for Project 1', tags: ['#Tag1', '#Tag2'] },
-      { id: 'project-2', title: 'Project 2', description: 'Description for Project 2', tags: ['#Tag3', '#Tag4'] },
-    ]},
+    {
+      id: 'hackathon-1',
+      title: 'Hackathon 1',
+      projects: [
+        {
+          id: 'project-1',
+          title: 'Project 1',
+          description: 'Description for Project 1',
+          tags: ['#Tag1', '#Tag2'],
+        },
+        {
+          id: 'project-2',
+          title: 'Project 2',
+          description: 'Description for Project 2',
+          tags: ['#Tag3', '#Tag4'],
+        },
+      ],
+    },
     // Add more hackathons and projects as needed
   ];
 
@@ -47,7 +61,11 @@ const MyPage = () => {
             <h2 className="text-xl font-bold mb-2">{hackathon.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {hackathon.projects.map((project) => (
-                <Link key={project.id} href={`/hackathons/${hackathon.id}/projects/${project.id}`} passHref>
+                <Link
+                  key={project.id}
+                  href={`/hackathons/${hackathon.id}/projects/${project.id}`}
+                  passHref
+                >
                   <div className="bg-gray-100 shadow-md rounded-lg overflow-hidden cursor-pointer">
                     <img
                       src={`https://picsum.photos/seed/${project.id}/400/400`}
@@ -59,7 +77,10 @@ const MyPage = () => {
                       <p className="text-gray-700">{project.description}</p>
                       <div className="mt-2">
                         {project.tags.map((tag, index) => (
-                          <span key={index} className="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full mr-2">
+                          <span
+                            key={index}
+                            className="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full mr-2"
+                          >
                             {tag}
                           </span>
                         ))}

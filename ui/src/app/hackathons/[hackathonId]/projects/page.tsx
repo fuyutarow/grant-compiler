@@ -21,7 +21,7 @@ const ALL_TAGS = [
   'DePin',
   'Gaming',
   'Infrastructure',
-  'Payments'
+  'Payments',
 ];
 
 function getRandomTags(): string[] {
@@ -33,8 +33,18 @@ const Page = () => {
   const { hackathonId } = useParams<Params>();
 
   const projects = [
-    { id: Math.floor(Math.random() * 1000000).toString(), title: 'Project 1', description: 'Description for Project 1', tags: getRandomTags() },
-    { id: Math.floor(Math.random() * 1000000).toString(), title: 'Project 2', description: 'Description for Project 2', tags: getRandomTags() },
+    {
+      id: Math.floor(Math.random() * 1000000).toString(),
+      title: 'Project 1',
+      description: 'Description for Project 1',
+      tags: getRandomTags(),
+    },
+    {
+      id: Math.floor(Math.random() * 1000000).toString(),
+      title: 'Project 2',
+      description: 'Description for Project 2',
+      tags: getRandomTags(),
+    },
     // Add more projects as needed
   ];
 

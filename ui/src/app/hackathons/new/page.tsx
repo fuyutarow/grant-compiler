@@ -2,9 +2,11 @@
 
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useState } from 'react';
-import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { AppBar } from '@/src/components/AppBar';
 import { useRouter } from 'next/navigation';
+import { Transaction } from '@mysten/sui/transactions';
+import { HackathonTX } from '@/src/libs/grantcompiler-sdk/hackathon';
 
 type FormData = {
   title: string;
@@ -18,12 +20,10 @@ export default function CreateHackathon() {
   const account = useCurrentAccount();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const suiClient = useSuiClient();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-  } = useForm<FormData>({
+  const { register, handleSubmit, control } = useForm<FormData>({
     defaultValues: {
       title: '',
       description: '',
@@ -40,11 +40,34 @@ export default function CreateHackathon() {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
     console.log('Submitted:', data);
-    alert('Hackathon created successfully');
-    setIsSubmitting(false);
-    router.push('/hackathons/42');
+    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    const tx = new Transaction();
+    await HackathonTX.create(tx, {
+      sender: account?.address!,
+      title: data.title,
+      description: data.description,
+      deadline: data.deadline,
+      grantAmont: data.stakeAmount,
+    });
+    console.log(tx);
+    signAndExecute(
+      { transaction: tx },
+      {
+        onSuccess: async ({ digest }) => {
+          const { effects } = await suiClient.waitForTransaction({
+            digest: digest,
+            options: {
+              showEffects: true,
+            },
+          });
+          console.log(effects?.created?.[0]?.reference?.objectId!);
+          setIsSubmitting(false);
+          alert('Hackathon created successfully');
+          router.push(`/hackathons/${effects?.created?.[0]?.reference?.objectId!}`);
+        },
+      },
+    );
   };
 
   return (
@@ -82,7 +105,8 @@ export default function CreateHackathon() {
                 className="w-full border border-gray-300 rounded-md p-2 bg-white text-black"
               />
               <p className="text-gray-500 text-xs mt-1">
-                Note: Due to testnet constraints, the decimal is set to 3. The actual decimal places should be 9.
+                Note: Due to testnet constraints, the decimal is set to 3. The actual decimal places
+                should be 9.
               </p>
             </div>
 

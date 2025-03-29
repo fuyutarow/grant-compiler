@@ -49,16 +49,16 @@ export const calculateTotalBalance = (coins: SuiObjectResponse[]): Balance => {
       if (content && content.dataType === 'moveObject' && 'fields' in content) {
         const fields = content.fields as { balance?: string };
         if ('balance' in fields) {
-          const balance = (fields.balance || '0');
+          const balance = fields.balance || '0';
           return sum + balance;
         }
       }
     }
     return sum;
-  }, (0));
+  }, 0);
 
-  const integer = total / (10 ** 9);
-  const decimal = (total % (10 ** 9)).toString().padStart(9, '0');
+  const integer = total / 10 ** 9;
+  const decimal = (total % 10 ** 9).toString().padStart(9, '0');
 
   return { integer, decimal };
 };

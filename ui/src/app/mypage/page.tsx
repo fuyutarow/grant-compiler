@@ -16,10 +16,24 @@ const MyPage = () => {
   const [userObjects, setUserObjects] = useState<CategorizedObjects | null>(null);
 
   const hackathons = [
-    { id: 'hackathon-1', title: 'Hackathon 1', projects: [
-      { id: 'project-1', title: 'Project 1', description: 'Description for Project 1', tags: ['#Tag1', '#Tag2'] },
-      { id: 'project-2', title: 'Project 2', description: 'Description for Project 2', tags: ['#Tag3', '#Tag4'] },
-    ]},
+    {
+      id: 'hackathon-1',
+      title: 'Hackathon 1',
+      projects: [
+        {
+          id: 'project-1',
+          title: 'Project 1',
+          description: 'Description for Project 1',
+          tags: ['#Tag1', '#Tag2'],
+        },
+        {
+          id: 'project-2',
+          title: 'Project 2',
+          description: 'Description for Project 2',
+          tags: ['#Tag3', '#Tag4'],
+        },
+      ],
+    },
     // Add more hackathons and projects as needed
   ];
 

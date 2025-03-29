@@ -24,7 +24,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ hackathonId, project }) => {
           <p className="text-gray-700">{project.description}</p>
           <div className="mt-2">
             {project.tags.map((tag, index) => (
-              <span key={index} className="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full mr-2">
+              <span
+                key={index}
+                className="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full mr-2"
+              >
                 {tag}
               </span>
             ))}

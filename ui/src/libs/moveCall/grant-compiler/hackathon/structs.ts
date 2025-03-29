@@ -302,12 +302,10 @@ export class Hackathon implements StructClass {
       scoreboard: ScoreBoard.bcs,
       pool: ReviewerPool.bcs,
       deadline: bcs.u64(),
-      created_by: bcs
-        .bytes(32)
-        .transform({
-          input: (val: string) => fromHEX(val),
-          output: (val: Uint8Array) => toHEX(val),
-        }),
+      created_by: bcs.bytes(32).transform({
+        input: (val: string) => fromHEX(val),
+        output: (val: Uint8Array) => toHEX(val),
+      }),
       created_at: bcs.u64(),
     });
   }

@@ -1,5 +1,8 @@
+import * as reified from '../../_framework/reified';
+import { Option } from '../../_dependencies/onchain/0x1/option/structs';
 import { String } from '../../_dependencies/onchain/0x1/string/structs';
 import { ID, UID } from '../../_dependencies/onchain/0x2/object/structs';
+import { Url } from '../../_dependencies/onchain/0x2/url/structs';
 import {
   PhantomReified,
   Reified,
@@ -9,9 +12,11 @@ import {
   decodeFromFields,
   decodeFromFieldsWithTypes,
   decodeFromJSONField,
+  fieldToJSON,
   phantom,
 } from '../../_framework/reified';
 import { FieldsWithTypes, composeSuiType, compressSuiType } from '../../_framework/util';
+import { Vector } from '../../_framework/vector';
 import { PKG_V1 } from '../index';
 import { bcs } from '@mysten/sui/bcs';
 import { SuiClient, SuiObjectData, SuiParsedData } from '@mysten/sui/client';
@@ -28,8 +33,10 @@ export interface ProjectFields {
   id: ToField<UID>;
   title: ToField<String>;
   description: ToField<String>;
-  walrusRef: ToField<String>;
   hackathonId: ToField<ID>;
+  logo: ToField<Option<Url>>;
+  links: ToField<Vector<Url>>;
+  tags: ToField<Vector<String>>;
   owner: ToField<'address'>;
   createdAt: ToField<'u64'>;
 }
@@ -51,8 +58,10 @@ export class Project implements StructClass {
   readonly id: ToField<UID>;
   readonly title: ToField<String>;
   readonly description: ToField<String>;
-  readonly walrusRef: ToField<String>;
   readonly hackathonId: ToField<ID>;
+  readonly logo: ToField<Option<Url>>;
+  readonly links: ToField<Vector<Url>>;
+  readonly tags: ToField<Vector<String>>;
   readonly owner: ToField<'address'>;
   readonly createdAt: ToField<'u64'>;
 
@@ -66,8 +75,10 @@ export class Project implements StructClass {
     this.id = fields.id;
     this.title = fields.title;
     this.description = fields.description;
-    this.walrusRef = fields.walrusRef;
     this.hackathonId = fields.hackathonId;
+    this.logo = fields.logo;
+    this.links = fields.links;
+    this.tags = fields.tags;
     this.owner = fields.owner;
     this.createdAt = fields.createdAt;
   }
@@ -114,14 +125,14 @@ export class Project implements StructClass {
       id: UID.bcs,
       title: String.bcs,
       description: String.bcs,
-      walrus_ref: String.bcs,
       hackathon_id: ID.bcs,
-      owner: bcs
-        .bytes(32)
-        .transform({
-          input: (val: string) => fromHEX(val),
-          output: (val: Uint8Array) => toHEX(val),
-        }),
+      logo: Option.bcs(Url.bcs),
+      links: bcs.vector(Url.bcs),
+      tags: bcs.vector(String.bcs),
+      owner: bcs.bytes(32).transform({
+        input: (val: string) => fromHEX(val),
+        output: (val: Uint8Array) => toHEX(val),
+      }),
       created_at: bcs.u64(),
     });
   }
@@ -131,8 +142,10 @@ export class Project implements StructClass {
       id: decodeFromFields(UID.reified(), fields.id),
       title: decodeFromFields(String.reified(), fields.title),
       description: decodeFromFields(String.reified(), fields.description),
-      walrusRef: decodeFromFields(String.reified(), fields.walrus_ref),
       hackathonId: decodeFromFields(ID.reified(), fields.hackathon_id),
+      logo: decodeFromFields(Option.reified(Url.reified()), fields.logo),
+      links: decodeFromFields(reified.vector(Url.reified()), fields.links),
+      tags: decodeFromFields(reified.vector(String.reified()), fields.tags),
       owner: decodeFromFields('address', fields.owner),
       createdAt: decodeFromFields('u64', fields.created_at),
     });
@@ -147,8 +160,10 @@ export class Project implements StructClass {
       id: decodeFromFieldsWithTypes(UID.reified(), item.fields.id),
       title: decodeFromFieldsWithTypes(String.reified(), item.fields.title),
       description: decodeFromFieldsWithTypes(String.reified(), item.fields.description),
-      walrusRef: decodeFromFieldsWithTypes(String.reified(), item.fields.walrus_ref),
       hackathonId: decodeFromFieldsWithTypes(ID.reified(), item.fields.hackathon_id),
+      logo: decodeFromFieldsWithTypes(Option.reified(Url.reified()), item.fields.logo),
+      links: decodeFromFieldsWithTypes(reified.vector(Url.reified()), item.fields.links),
+      tags: decodeFromFieldsWithTypes(reified.vector(String.reified()), item.fields.tags),
       owner: decodeFromFieldsWithTypes('address', item.fields.owner),
       createdAt: decodeFromFieldsWithTypes('u64', item.fields.created_at),
     });
@@ -163,8 +178,10 @@ export class Project implements StructClass {
       id: this.id,
       title: this.title,
       description: this.description,
-      walrusRef: this.walrusRef,
       hackathonId: this.hackathonId,
+      logo: fieldToJSON<Option<Url>>(`${Option.$typeName}<${Url.$typeName}>`, this.logo),
+      links: fieldToJSON<Vector<Url>>(`vector<${Url.$typeName}>`, this.links),
+      tags: fieldToJSON<Vector<String>>(`vector<${String.$typeName}>`, this.tags),
       owner: this.owner,
       createdAt: this.createdAt.toString(),
     };
@@ -179,8 +196,10 @@ export class Project implements StructClass {
       id: decodeFromJSONField(UID.reified(), field.id),
       title: decodeFromJSONField(String.reified(), field.title),
       description: decodeFromJSONField(String.reified(), field.description),
-      walrusRef: decodeFromJSONField(String.reified(), field.walrusRef),
       hackathonId: decodeFromJSONField(ID.reified(), field.hackathonId),
+      logo: decodeFromJSONField(Option.reified(Url.reified()), field.logo),
+      links: decodeFromJSONField(reified.vector(Url.reified()), field.links),
+      tags: decodeFromJSONField(reified.vector(String.reified()), field.tags),
       owner: decodeFromJSONField('address', field.owner),
       createdAt: decodeFromJSONField('u64', field.createdAt),
     });

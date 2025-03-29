@@ -21,11 +21,7 @@ export default function CreateProject() {
   const { hackathonId } = useParams<Params>();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-  } = useForm<FormData>({
+  const { register, handleSubmit, control } = useForm<FormData>({
     defaultValues: {
       title: '',
       description: '',
@@ -65,7 +61,9 @@ export default function CreateProject() {
 
             {/* Project Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Project Description*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Project Description*
+              </label>
               <textarea
                 {...register('description', { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2 bg-white text-black"
@@ -74,7 +72,9 @@ export default function CreateProject() {
 
             {/* Project Links */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Project Links (optional)</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Project Links (optional)
+              </label>
               {fields.map((field, index) => (
                 <div key={field.id} className="flex gap-2 items-center">
                   <input
@@ -87,8 +87,19 @@ export default function CreateProject() {
                     onClick={() => remove(index)}
                     className="bg-red-500 hover:bg-red-600 text-white rounded-md p-1.5"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -98,9 +109,19 @@ export default function CreateProject() {
                 onClick={() => append({ url: '' })}
                 className="flex items-center gap-2 border border-gray-500 text-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-100"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
                 Add Link
               </button>

@@ -4,8 +4,6 @@ import { AppBar } from '@/src/components/AppBar';
 import { HackathonFields } from '@/src/libs/moveCall/grant-compiler/hackathon/structs';
 import Link from 'next/link';
 
-
-
 export default function Hackathons() {
   const hackathons: HackathonFields[] = [
     {
@@ -29,7 +27,7 @@ export default function Hackathons() {
         reserved_sui: 0n,
         distributed: new Map(),
       },
-      deadline: ('2023-12-31'),
+      deadline: '2023-12-31',
       created_by: '0x123',
       created_at: '2023-01-01',
     },
@@ -54,7 +52,7 @@ export default function Hackathons() {
         reserved_sui: 0n,
         distributed: new Map(),
       },
-      deadline: ('2023-12-31'),
+      deadline: '2023-12-31',
       created_by: '0x456',
       created_at: '2023-01-01',
     },

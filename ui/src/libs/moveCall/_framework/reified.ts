@@ -271,7 +271,7 @@ export function decodeFromFields(reified: Reified<TypeArgument, any>, field: any
     case 'u64':
     case 'u128':
     case 'u256':
-      return (field);
+      return BigInt(field);
     case 'address':
       return `0x${field}`;
   }
@@ -309,7 +309,7 @@ export function decodeFromFieldsWithTypes(reified: Reified<TypeArgument, any>, i
     case 'u64':
     case 'u128':
     case 'u256':
-      return (item);
+      return BigInt(item);
     case 'address':
       return item;
   }
@@ -325,7 +325,7 @@ export function decodeFromFieldsWithTypes(reified: Reified<TypeArgument, any>, i
     case '0x2::object::UID':
       return item.id;
     case '0x2::balance::Balance':
-      return reified.fromFields({ value: (item) });
+      return reified.fromFields({ value: BigInt(item) });
     case '0x1::option::Option': {
       if (item === null) {
         return null;
@@ -412,7 +412,7 @@ export function decodeFromJSONField(typeArg: Reified<TypeArgument, any>, field: 
     case 'u64':
     case 'u128':
     case 'u256':
-      return (field);
+      return BigInt(field);
     case 'address':
       return field;
   }
