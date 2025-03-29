@@ -1,9 +1,9 @@
-
 module grant_compiler::project {
     use std::string::{Self, String};
     use sui::clock::Clock;
     use sui::object::{Self, ID, UID};
     use sui::tx_context::{Self, TxContext};
+    use sui::balance::{Self, Balance};
 
     /// Project struct
     public struct Project has key, store {
@@ -41,20 +41,28 @@ module grant_compiler::project {
 
     /// Update fields (only by owner)
     public fun update(
-        project: &mut Project,
+        self: &mut Project,
         new_title: String,
         new_description: String,
         new_walrus_ref: String,
         ctx: &TxContext,
     ) {
-        assert!(project.owner == ctx.sender(), 0);
-        project.title = new_title;
-        project.description = new_description;
-        project.walrus_ref = new_walrus_ref;
+        assert!(self.owner == ctx.sender(), 0);
+        self.title = new_title;
+        self.description = new_description;
+        self.walrus_ref = new_walrus_ref;
     }
 
-    public fun delete(project: Project) {
-        let Project { id, .. } = project;
-        object::delete(id);
+    public fun distribute_reward(self: &Project, reward: Balance<sui::sui::SUI>, ctx: &mut TxContext) {
+        let coin = sui::coin::from_balance(reward, ctx);
+        sui::transfer::public_transfer(coin, self.owner);
     }
+
+
+
+
+    // public fun delete(self: Project) {
+    //     let Project { id, .. } = self;
+    //     object::delete(id);
+    // }
 }

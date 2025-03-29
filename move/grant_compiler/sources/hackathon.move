@@ -3,15 +3,23 @@ module grant_compiler::hackathon {
 
     use sui::clock::{Clock};
     use sui::object::{Self, ID, UID};
+    use sui::table::{Self, Table};
+    use sui::balance::{Self, Balance};
 
     public struct Hackathon has key, store {
         id: UID,
         title: String,
         description: String,
+        project_scores: Table<ID, u8>,
+        pool: ReviewerPool,
         deadline: u64,
-        projects: vector<ID>,
         created_by: address,
         created_at: u64,
+    }
+
+    public struct ReviewerPool has store {
+        reserved_sui: Balance<sui::sui::SUI>,
+
     }
 
     public fun create(
@@ -28,14 +36,21 @@ module grant_compiler::hackathon {
             title,
             description,
             deadline,
-            projects: vector[],
+            project_scores: table::new<ID, u8>(ctx),
+            pool: ReviewerPool {
+                reserved_sui: balance::zero(),
+            },
             created_by: tx_context::sender(ctx),
             created_at: timestamp,
         };
         sui::transfer::public_share_object(hackathon);
     }
 
-    public fun add_project_id(hackathon: &mut Hackathon, project_id: ID) {
-        hackathon.projects.push_back(project_id);
+    public fun stake_sui(self: &mut Hackathon, amount: Balance<sui::sui::SUI>) {
+        self.pool.reserved_sui.join(amount);
+    }
+
+    public fun add_project_id(self: &mut Hackathon, project_id: ID) {
+        self.project_scores.add(project_id, 0);
     }
 }
