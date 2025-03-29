@@ -4,6 +4,12 @@ install-sui-cli:
     # Example command for macOS using Homebrew
     brew install mystenlabs/tap/sui
 
+
+install-sui-client-gen:
+    cargo install --locked --git https://github.com/kunalabs-io/sui-client-gen.git
+
+
+
 # Set up Testnet Environment
 setup-testnet-env:
     sui client new-env --alias testnet --rpc https://fullnode.testnet.sui.io:443
@@ -13,6 +19,8 @@ setup-testnet-env:
 create-new-address:
     # sui client new-address secp256k1
     sui client new-address ed25519
+
+
 
 # Switch Active Address
 switch-active-address ADDRESS:
