@@ -44,6 +44,7 @@ export default function CreateProject() {
     setIsSubmitting(true);
     await new Promise((resolve) => setTimeout(resolve, 5000));
     console.log('Submitted:', data);
+    alert('Submitted successfully');
     setIsSubmitting(false);
   };
 
