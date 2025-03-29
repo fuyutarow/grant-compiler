@@ -1,24 +1,41 @@
 module grant_compiler::hackathon;
 
 use std::string::{Self, String};
-use sui::clock::{Clock};
+use sui::clock::Clock;
 use sui::object::{Self, ID, UID};
 use sui::table::{Self, Table};
 use sui::balance::{Self, Balance};
+use sui::tx_context::{Self, TxContext};
 
+// ===================================
+// Error Codes
+// ===================================
 const ERR_DEADLINE_PASSED: u64 = 0;
 const ERR_ALREADY_DISTRIBUTED: u64 = 1;
 const ERR_DEADLINE_NOT_PASSED: u64 = 2;
 const ERR_INVALID_TOTAL_SCORE: u64 = 3;
+const ERR_INVALID_ADMIN_CAP: u64 = 4;
+const ERR_ALREADY_SUBMITTED: u64 = 5;
 
+// ===================================
+// Structs
+// ===================================
+
+public struct AdminCap has key, store {
+    id: UID,
+    hackathon_id: ID,
+}
+
+// Shared object
 public struct Hackathon has key, store {
     id: UID,
     title: String,
     description: String,
     projects: vector<ID>,
+
     scoreboard: ScoreBoard,
     pool: ReviewerPool,
-    deadline: u64,
+    deadline: u64, // submit_deadline and judge_deadline; both are the same in this contract
     created_by: address,
     created_at: u64,
 }
@@ -33,21 +50,25 @@ public struct ReviewerPool has store {
     distributed: Table<ID, bool>, // project_id -> is_distributed
 }
 
+// ===================================
+// Creation
+// ===================================
+
 public fun create(
     title: String,
     description: String,
     deadline: u64,
     clock: &Clock,
-    ctx: &mut tx_context::TxContext,
-) {
+    ctx: &mut TxContext,
+): AdminCap {
     let timestamp = clock.timestamp_ms();
 
     let hackathon = Hackathon {
         id: object::new(ctx),
         title,
         description,
-        deadline,
         projects: vector[],
+
         scoreboard: ScoreBoard {
             scores: table::new(ctx),
             sum_score: 0,
@@ -56,26 +77,56 @@ public fun create(
             reserved_sui: balance::zero(),
             distributed: table::new(ctx)
         },
+
+        deadline,
         created_by: tx_context::sender(ctx),
         created_at: timestamp,
     };
-    sui::transfer::public_share_object(hackathon);
+
+    let cap = AdminCap {
+        id: object::new(ctx),
+        hackathon_id: object::id(&hackathon),
+    };
+
+    transfer::public_share_object(hackathon);
+    cap
 }
 
-public fun stake_sui(self: &mut Hackathon, amount: Balance<sui::sui::SUI>) {
+// ===================================
+// Before deadline
+// ===================================
+
+public fun stake_sui(self: &mut Hackathon, amount: Balance<sui::sui::SUI>, clock: &Clock) {
+    assert!(clock.timestamp_ms() <= self.deadline, ERR_DEADLINE_PASSED);
     self.pool.reserved_sui.join(amount);
 }
 
-public fun add_project_id(self: &mut Hackathon, project_id: ID) {
+public fun add_project_id(self: &mut Hackathon, project_id: ID, clock: &Clock) {
+    assert!(clock.timestamp_ms() <= self.deadline, ERR_DEADLINE_PASSED);
+    assert!(!self.scoreboard.scores.contains(project_id), ERR_ALREADY_SUBMITTED);
+
+    self.scoreboard.scores.add(project_id, 0); // default 0
     self.projects.push_back(project_id);
-    self.scoreboard.scores.add(project_id, 0);
 }
 
-public fun update_score(self: &mut Hackathon, project_id: ID, new_score: u64) {
+public fun update_score(
+    self: &mut Hackathon,
+    admin_cap: &AdminCap,
+    project_id: ID,
+    new_score: u64,
+    clock: &Clock,
+) {
+    assert!(object::id(self) == admin_cap.hackathon_id, ERR_INVALID_ADMIN_CAP);
+    assert!(clock.timestamp_ms() <= self.deadline, ERR_DEADLINE_PASSED);
+
     let old_score = *self.scoreboard.scores.borrow(project_id);
     *self.scoreboard.scores.borrow_mut(project_id) = new_score;
     self.scoreboard.sum_score = self.scoreboard.sum_score + new_score - old_score;
 }
+
+// ===================================
+// Reward Calculation / Distribution
+// ===================================
 
 public fun calulate_project_reward_value(self: &Hackathon, project_id: ID): u64 {
     let total_score = self.scoreboard.sum_score;
@@ -95,7 +146,7 @@ public fun split_project_reward(self: &mut Hackathon, project_id: ID, clock: &Cl
     project_reward
 }
 
-public fun withdraw_remaining_reward(self: &mut Hackathon, ctx: &mut tx_context::TxContext, clock: &Clock) {
+public fun withdraw_remaining_reward(self: &mut Hackathon, ctx: &mut TxContext, clock: &Clock) {
     assert!(clock.timestamp_ms() > self.deadline, ERR_DEADLINE_NOT_PASSED);
 
     let total_score = self.scoreboard.sum_score;

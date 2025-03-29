@@ -35,7 +35,7 @@ public fun new(
         created_at: clock.timestamp_ms(),
     };
 
-    hackathon.add_project_id(object::id(&project));
+    hackathon.add_project_id(object::id(&project), clock);
     project
 }
 
