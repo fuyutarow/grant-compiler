@@ -54,6 +54,7 @@ public struct ReviewerPool has store {
 // ===================================
 
 public fun create(
+    root: &mut grant_compiler::root::Root,
     title: String,
     description: String,
     deadline: u64,
@@ -81,6 +82,7 @@ public fun create(
         created_by: tx_context::sender(ctx),
         created_at: timestamp,
     };
+    root.add_hackathon(object::id(&hackathon));
 
     let cap = AdminCap {
         id: object::new(ctx),

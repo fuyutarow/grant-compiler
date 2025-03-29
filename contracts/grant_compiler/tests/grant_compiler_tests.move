@@ -20,18 +20,24 @@ fun test_hackathon_flow() {
     // Create and share Clock
     clock::create_for_testing(test.ctx()).share_for_testing();
 
+    // Create and share Root
+    grant_compiler::root::init_for_testing(test.ctx());
+
     // === Step 1: ALICE creates Hackathon ===
     test.next_tx(ALICE); {
         let clock = test.take_shared<Clock>();
+        let mut root = test.take_shared<grant_compiler::root::Root>();
         let cap = grant_compiler::hackathon::create(
+            &mut root,
             utf8(b"My Hackathon"),
             utf8(b"A fun event"),
             999999999999,
             &clock,
             test.ctx()
         );
-        test::return_shared(clock);
         sui::transfer::public_transfer(cap, ALICE);
+        test::return_shared(root);
+        test::return_shared(clock);
     };
 
     // === Step 2: ALICE stakes SUI ===

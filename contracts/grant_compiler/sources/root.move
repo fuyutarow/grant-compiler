@@ -14,7 +14,6 @@ public struct Root has key, store {
     hackathons: vector<ID>,
 }
 
-
 fun init(ctx: &mut TxContext) {
     let root = Root {
         id: object::new(ctx),
@@ -25,4 +24,10 @@ fun init(ctx: &mut TxContext) {
 
 public fun add_hackathon(root: &mut Root, hackathon_id: ID) {
     root.hackathons.push_back(hackathon_id);
+}
+
+
+#[test_only]
+public fun init_for_testing(ctx: &mut TxContext) {
+    init(ctx);
 }
