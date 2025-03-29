@@ -138,7 +138,7 @@ public fun calulate_project_reward_value(self: &Hackathon, project_id: ID): u64 
 }
 
 public fun split_project_reward(self: &mut Hackathon, project_id: ID, clock: &Clock): Balance<sui::sui::SUI> {
-    assert!(clock.timestamp_ms() <= self.deadline, ERR_DEADLINE_PASSED);
+    assert!(clock.timestamp_ms() > self.deadline, ERR_DEADLINE_PASSED);
     assert!(!self.pool.distributed.contains(project_id), ERR_ALREADY_DISTRIBUTED);
 
     let project_reward_value = self.calulate_project_reward_value(project_id);

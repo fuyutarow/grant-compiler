@@ -6,7 +6,7 @@ use sui::object::{Self, ID, UID};
 use sui::tx_context::{Self, TxContext};
 use sui::balance::{Self, Balance};
 
-/// Project struct
+// To be a single owner object
 public struct Project has key, store {
     id: UID,
     title: String,
@@ -38,7 +38,6 @@ public fun new(
     hackathon.add_project_id(object::id(&project), clock);
     project
 }
-
 
 /// Update fields (only by owner)
 public fun update(
