@@ -1,11 +1,39 @@
 'use client';
 
 import { AppBar } from '@/src/components/AppBar';
-import { HackathonFields } from '@/src/libs/moveCall/grant-compiler/hackathon/structs';
+import { sdkClient } from '@/src/contracts';
+import { ROOT_ID } from '@/src/libs/grantcompiler-sdk';
+import { Hackathon, HackathonFields } from '@/src/libs/moveCall/grant-compiler/hackathon/structs';
+import { Root } from '@/src/libs/moveCall/grant-compiler/root/structs';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 export default function Hackathons() {
-  const hackathons = [
+  const { data: root } = useSWR(
+    ROOT_ID,
+    async (key: string) => await Root.fetch(sdkClient, key),
+    { revalidateOnFocus: false },
+  );
+
+  const [hackathons, setHackathons] = useState<HackathonFields[]>([]);
+
+  useEffect(() => {
+    const fetchHackathons = async() => {
+      root?.hackathons.forEach(async (hackathonId) => {
+        const hackathonData = await Hackathon.fetch(sdkClient, hackathonId);
+        setHackathons((prev) => [...prev, hackathonData]);
+      });
+    }
+
+    fetchHackathons();
+
+    console.log(hackathons);
+
+
+  }, [root]);
+
+  const _hackathons = [
     {
       id: '1',
       title: 'Hackathon 1',

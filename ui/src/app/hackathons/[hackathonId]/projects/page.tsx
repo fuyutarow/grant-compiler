@@ -38,6 +38,7 @@ const Page = () => {
     { revalidateOnFocus: false },
   );
 
+
   const projects = [
     {
       id: Math.floor(Math.random() * 1000000).toString(),
