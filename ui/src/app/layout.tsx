@@ -1,7 +1,10 @@
+export const runtime = 'edge';
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { inter } from './fonts';
 import { Providers } from './providers';
+
 
 export const metadata: Metadata = {
   title: 'Grant-Compiler',
