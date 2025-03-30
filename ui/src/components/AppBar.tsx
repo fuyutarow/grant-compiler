@@ -21,6 +21,7 @@ export const AppBar = () => (
         <span className="text-gray-800 hover:underline cursor-pointer mr-4">My Page</span>
       </Link>
       <ConnectButton />
+      <span className="ml-4 text-gray-800">Testnet</span>
     </div>
   </header>
 );

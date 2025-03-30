@@ -19,7 +19,7 @@ export default function Page() {
 
   useEffect(() => {
     router.push(`/hackathons/${hackathonId}/projects`);
-  }, [pathname, router]);
+  }, [pathname, router, hackathonId]);
 
   return null; // Or a loading indicator if needed
 }

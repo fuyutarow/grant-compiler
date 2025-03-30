@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import { AppBar } from '@/src/components/AppBar';
 import { useEffect, useState } from 'react';
 import { Counter } from '@/src/libs/moveCall/counter/counter/structs';
-import { suiClient } from '@/src/contracts';
 import useSWR from 'swr';
 import Link from 'next/link';
 

@@ -1,20 +1,10 @@
 'use client';
-import { getUserProfile } from '@/src/contracts/query';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { useEffect, useState } from 'react';
-import {
-  CategorizedObjects,
-  calculateTotalBalance,
-  formatBalance,
-} from '@/src/utils/assetsHelpers';
 import { AppBar } from '@/src/components/AppBar';
-import Link from 'next/link';
 import ProjectCard from '@/src/components/ProjectCard';
 
 const MyPage = () => {
-  const account = useCurrentAccount();
-  const [userObjects, setUserObjects] = useState<CategorizedObjects | null>(null);
-
   const hackathons = [
     {
       id: 'hackathon-1',
@@ -36,21 +26,6 @@ const MyPage = () => {
     },
     // Add more hackathons and projects as needed
   ];
-
-  useEffect(() => {
-    async function fetchUserProfile() {
-      if (account?.address) {
-        try {
-          const profile = await getUserProfile(account.address);
-          setUserObjects(profile);
-        } catch (error) {
-          console.error('Error fetching user profile:', error);
-        }
-      }
-    }
-
-    fetchUserProfile();
-  }, [account]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-black">

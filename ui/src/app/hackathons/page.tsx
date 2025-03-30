@@ -5,59 +5,27 @@ import { HackathonFields } from '@/src/libs/moveCall/grant-compiler/hackathon/st
 import Link from 'next/link';
 
 export default function Hackathons() {
-  const hackathons: HackathonFields[] = [
+  const hackathons = [
     {
       id: '1',
       title: 'Hackathon 1',
       description: 'Description for Hackathon 1',
       projects: [],
-      scoreboard: {
-        __StructClass: 'ScoreBoard',
-        $typeName: 'ScoreBoard',
-        $fullTypeName: 'grant_compiler::hackathon::ScoreBoard',
-        $typeArgs: [],
-        scores: new Map(),
-        sum_score: 0n,
-      },
-      pool: {
-        __StructClass: 'ReviewerPool',
-        $typeName: 'ReviewerPool',
-        $fullTypeName: 'grant_compiler::hackathon::ReviewerPool',
-        $typeArgs: [],
-        reserved_sui: 0n,
-        distributed: new Map(),
-      },
       deadline: '2023-12-31',
-      created_by: '0x123',
-      created_at: '2023-01-01',
+      createdBy: '0x123',
+      createdAt: '2023-01-01',
     },
     {
       id: '2',
       title: 'Hackathon 2',
       description: 'Description for Hackathon 2',
       projects: [],
-      scoreboard: {
-        __StructClass: 'ScoreBoard',
-        $typeName: 'ScoreBoard',
-        $fullTypeName: 'grant_compiler::hackathon::ScoreBoard',
-        $typeArgs: [],
-        scores: new Map(),
-        sum_score: 0n,
-      },
-      pool: {
-        __StructClass: 'ReviewerPool',
-        $typeName: 'ReviewerPool',
-        $fullTypeName: 'grant_compiler::hackathon::ReviewerPool',
-        $typeArgs: [],
-        reserved_sui: 0n,
-        distributed: new Map(),
-      },
       deadline: '2023-12-31',
-      created_by: '0x456',
-      created_at: '2023-01-01',
+      createdBy: '0x456',
+      createdAt: '2023-01-01',
     },
     // Add more hackathons as needed
-  ];
+  ] as unknown as HackathonFields[];
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">

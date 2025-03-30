@@ -4,8 +4,9 @@ import { useParams } from 'next/navigation';
 import { AppBar } from '@/src/components/AppBar';
 import { useEffect, useState } from 'react';
 import { Counter } from '@/src/libs/moveCall/counter/counter/structs';
-import { suiClient } from '@/src/contracts';
 import useSWR from 'swr';
+import { useSuiClient } from '@mysten/dapp-kit';
+import { sdkClient } from '@/src/contracts';
 
 type Params = {
   counterId: string;
@@ -15,7 +16,7 @@ const Page = () => {
   const { counterId } = useParams<Params>();
   const { data: counter } = useSWR(
     counterId,
-    async (key: string) => await Counter.fetch(suiClient, key),
+    async (key: string) => await Counter.fetch(sdkClient, key),
     { revalidateOnFocus: false },
   );
 

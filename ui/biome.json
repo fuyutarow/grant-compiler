@@ -6,21 +6,9 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "all": true,
-      "style": {
-        "useNamingConvention": "off",
-        "noNonNullAssertion": "off",
-        "noUselessElse": "off"
-      },
-      "complexity": {
-        "noForEach": "off",
-        "useSimplifiedLogicExpression": "off"
-      },
-      "a11y": {
-        "useButtonType": "off"
-      },
-      "suspicious": {
-        "noConsoleLog": "off"
+      "recommended": true,
+      "correctness": {
+        "noUnusedImports": "error"
       }
     }
   },

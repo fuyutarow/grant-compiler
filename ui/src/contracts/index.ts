@@ -34,14 +34,13 @@ const { networkConfig, useNetworkVariables } = createNetworkConfig({
   },
 });
 
-// 创建全局 SuiClient 实例
-const suiClient = new SuiClient({ url: networkConfig[network].url });
+const sdkClient = new SuiClient({ url: networkConfig[network].url });
 
 export {
   getNetworkVariables,
   networkConfig,
   network,
-  suiClient,
+  sdkClient,
   createBetterTxFactory,
   useNetworkVariables,
 };

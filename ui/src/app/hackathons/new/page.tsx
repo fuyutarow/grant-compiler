@@ -40,34 +40,54 @@ export default function CreateHackathon() {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    console.log('Submitted:', data);
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-    const tx = new Transaction();
-    await HackathonTX.create(tx, {
-      sender: account?.address!,
-      title: data.title,
-      description: data.description,
-      deadline: data.deadline,
-      grantAmont: data.stakeAmount,
-    });
-    console.log(tx);
-    signAndExecute(
-      { transaction: tx },
-      {
-        onSuccess: async ({ digest }) => {
-          const { effects } = await suiClient.waitForTransaction({
-            digest: digest,
-            options: {
-              showEffects: true,
-            },
-          });
-          console.log(effects?.created?.[0]?.reference?.objectId!);
-          setIsSubmitting(false);
-          alert('Hackathon created successfully');
-          router.push(`/hackathons/${effects?.created?.[0]?.reference?.objectId!}`);
+
+    // Nullチェック：account or address がない場合
+    if (!account?.address) {
+      alert('No connected account found.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const tx = new Transaction();
+
+      await HackathonTX.create(tx, {
+        sender: account.address,
+        title: data.title,
+        description: data.description,
+        deadline: data.deadline,
+        grantAmont: data.stakeAmount,
+      });
+
+      signAndExecute(
+        { transaction: tx },
+        {
+          onSuccess: async ({ digest }) => {
+            const { effects } = await suiClient.waitForTransaction({
+              digest,
+              options: {
+                showEffects: true,
+              },
+            });
+
+            const createdId = effects?.created?.[0]?.reference?.objectId;
+            if (!createdId) {
+              alert('Failed to retrieve created hackathon ID.');
+              setIsSubmitting(false);
+              return;
+            }
+
+            setIsSubmitting(false);
+            alert(`Hackathon created successfully: hackathonId: ${createdId}`);
+            router.push(`/hackathons/${createdId}`);
+          },
         },
-      },
-    );
+      );
+    } catch (err) {
+      console.error('Transaction error:', err);
+      alert('An error occurred during hackathon creation.');
+      setIsSubmitting(false);
+    }
   };
 
   return (
