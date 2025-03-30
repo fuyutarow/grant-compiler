@@ -7,6 +7,7 @@ import { AppBar } from '@/src/components/AppBar';
 import { useRouter } from 'next/navigation';
 import { Transaction } from '@mysten/sui/transactions';
 import { HackathonTX } from '@/src/libs/grantcompiler-sdk/hackathon';
+import { Hackathon } from '@/src/libs/moveCall/grant-compiler/hackathon/structs';
 
 type FormData = {
   title: string;
@@ -41,7 +42,6 @@ export default function CreateHackathon() {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
 
-    // Nullチェック：account or address がない場合
     if (!account?.address) {
       alert('No connected account found.');
       setIsSubmitting(false);
@@ -67,19 +67,28 @@ export default function CreateHackathon() {
               digest,
               options: {
                 showEffects: true,
-              },
+                showObjectChanges: true,
+              }
             });
 
-            const createdId = effects?.created?.[0]?.reference?.objectId;
-            if (!createdId) {
-              alert('Failed to retrieve created hackathon ID.');
-              setIsSubmitting(false);
-              return;
+            const createdObjects = effects?.created ?? [];
+
+            for (const c of createdObjects) {
+              const { data } = await suiClient.getObject({
+                id: c.reference.objectId,
+                options: { showType: true }
+              });
+
+              if (data?.type === Hackathon.$typeName) {
+                const createdId = c.reference.objectId;
+                alert(`Hackathon created successfully: hackathonId: ${createdId}`);
+                router.push(`/hackathons/${createdId}`);
+                return;
+              }
             }
 
+            alert('Failed to retrieve created hackathon ID.');
             setIsSubmitting(false);
-            alert(`Hackathon created successfully: hackathonId: ${createdId}`);
-            router.push(`/hackathons/${createdId}`);
           },
         },
       );
