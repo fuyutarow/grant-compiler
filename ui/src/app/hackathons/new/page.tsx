@@ -34,11 +34,6 @@ export default function CreateHackathon() {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'projects',
-  });
-
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
 

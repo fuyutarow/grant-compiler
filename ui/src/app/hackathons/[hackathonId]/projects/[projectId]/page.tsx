@@ -90,6 +90,15 @@ const Page = () => {
               <p className="text-gray-600">{project.description}</p>
             </div>
           </div>
+          
+          <div className="mt-8 flex justify-center">
+            <button 
+              onClick={() => alert(`Claiming grant for project: ${project.title}`)}
+              className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md font-semibold transition-colors"
+            >
+              Claim Grant
+            </button>
+          </div>
         </div>
       </main>
     </div>

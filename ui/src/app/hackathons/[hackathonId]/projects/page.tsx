@@ -126,6 +126,14 @@ const Page = () => {
             <ProjectCard key={project.id} hackathonId={hackathonId} project={project} />
           ))}
         </div>
+
+        <div className="mt-8 flex justify-center">
+          <Link href={`/hackathons/${hackathonId}/submit`}>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md transition-colors">
+              Submit Project
+            </button>
+          </Link>
+        </div>
       </main>
     </div>
   );

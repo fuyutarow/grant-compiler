@@ -1,10 +1,29 @@
 'use client';
 
 import { useForm, useFieldArray } from 'react-hook-form';
-import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { AppBar } from '@/src/components/AppBar';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Transaction } from '@mysten/sui/transactions';
+import { ProjectTX } from '@/src/libs/grantcompiler-sdk/project';
+import { Project } from '@/src/libs/moveCall/grant-compiler/project/structs';
+
+const ALL_TAGS = [
+  'Consumer',
+  'DAOs',
+  'DeFi',
+  'DeFi & Payments',
+  'DePin',
+  'Gaming',
+  'Infrastructure',
+  'Payments',
+];
+
+function getRandomTags(): string[] {
+  const shuffled = ALL_TAGS.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, Math.floor(Math.random() * 3) + 1);
+}
 
 type Params = {
   hackathonId: string;
@@ -19,8 +38,11 @@ type FormData = {
 
 export default function CreateProject() {
   const { hackathonId } = useParams<Params>();
+  const account = useCurrentAccount();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const router = useRouter();
+  const suiClient = useSuiClient();
   const { register, handleSubmit, control } = useForm<FormData>({
     defaultValues: {
       title: '',
@@ -37,10 +59,84 @@ export default function CreateProject() {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    console.log('Submitted:', data);
-    alert('Submitted successfully');
-    setIsSubmitting(false);
+    console.log("Submit started with data:", data);
+
+    if (!account?.address) {
+      alert('No connected account found.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      console.log("Creating transaction...");
+      const tx = new Transaction();
+      console.log("Transaction created:", tx);
+
+      console.log("Calling ProjectTX.create...");
+      await ProjectTX.create(tx, {
+        sender: account.address,
+        hackathonId: data.hackathonId,
+        title: data.title,
+        description: data.description,
+        logo: null,
+        links: data.links.map((link) => link.url),
+        tags: getRandomTags()
+      });
+      console.log("ProjectTX.create completed");
+
+      console.log("Calling signAndExecute...");
+      signAndExecute(
+        { transaction: tx },
+        {
+          onSuccess: async ({ digest }) => {
+            console.log("Transaction successful, digest:", digest);
+
+            console.log("Waiting for transaction...");
+            const { effects } = await suiClient.waitForTransaction({
+              digest,
+              options: {
+                showEffects: true,
+                showObjectChanges: true,
+              }
+            });
+            console.log("Transaction effects:", effects);
+
+            const createdObjects = effects?.created ?? [];
+            console.log("Created objects:", createdObjects);
+
+            for (const c of createdObjects) {
+              console.log("Checking object:", c.reference.objectId);
+              const { data } = await suiClient.getObject({
+                id: c.reference.objectId,
+                options: { showType: true }
+              });
+              console.log("Object data:", data);
+
+              if (data?.type === Project.$typeName) {
+                console.log("Project found!");
+                const createdId = c.reference.objectId;
+                alert(`Project created successfully: projectId: ${createdId}`);
+                router.push(`/hackathons/${hackathonId}/projects/${createdId}`);
+                return;
+              }
+            }
+
+            console.log("Project not found in created objects");
+            alert('Failed to retrieve created project ID.');
+            setIsSubmitting(false);
+          },
+          onError: (error) => {
+            console.error("signAndExecute error:", error);
+            alert(`Transaction failed: ${error.message || 'Unknown error'}`);
+            setIsSubmitting(false);
+          }
+        },
+      );
+    } catch (err) {
+      console.error('Transaction error:', err);
+      alert(`An error occurred during project creation: ${err instanceof Error ? err.message : String(err)}`);
+      setIsSubmitting(false);
+    }
   };
 
   return (
